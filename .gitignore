@@ -92,3 +92,9 @@ ENV/
 
 # Rope project settings
 .ropeproject
+
+# Images
+*.svg
+*.png
+
+codes/*
