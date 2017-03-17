@@ -8,7 +8,7 @@ from jinja2 import Environment, PackageLoader
 import qr_control as qr
 
 
-DATABASE = {}
+DATABASE = []
 
 
 env = Environment(
@@ -29,17 +29,26 @@ async def root(request):
 async def signup(request, methods=['GET']):
     token = str(uuid4().hex)
     host = request.headers.get("Host")
+    DATABASE.append(token)
     qr.image(
-        f"{host}/signup?token={token}", f"./static/codes/{token}.svg"
+        f"{host}/signin?token={token}", f"./static/codes/{token}.svg"
     )
     template = env.get_template("signup.html")
     html_content = template.render(path=f"/static/codes/{token}.svg")
     return html(html_content)
 
 
+@app.route("/signin")
+async def signin(request, methods=['GET']):
+    token = request.args['token'][0]
+    if token not in DATABASE:
+        return text(":<")
+    return text(":>")
+
+
 if __name__ == "__main__":
     app.run(
         debug=True,
-        host="localhost",
+        host="0.0.0.0",
         port=8000
     )
