@@ -1,6 +1,0 @@
-Django==1.10.6
-image==1.5.5
-olefile==0.44
-Pillow==4.0.0
-qrcode==5.3
-six==1.10.0
