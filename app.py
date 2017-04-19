@@ -1,4 +1,5 @@
 # bultin library
+import os
 from uuid import uuid4
 
 from sanic import Sanic
@@ -8,7 +9,7 @@ from jinja2 import Environment, PackageLoader
 import qr_control as qr
 
 
-DATABASE = ['asd']
+DATABASE = []
 
 
 env = Environment(
@@ -33,7 +34,7 @@ async def sign_up(request, methods=['GET']):
     host = request.headers.get("Host")
     DATABASE.append(token)
     qr.image(
-        f"{host}/signin?token={token}", f"./static/codes/{token}.svg"
+        f"http://{host}/signin?token={token}", f"./static/codes/{token}.svg"
     )
     template = env.get_template("signup.html")
     html_content = template.render(path=f"/static/codes/{token}.svg")
@@ -50,8 +51,10 @@ async def signin(request, methods=['GET']):
 
 
 if __name__ == "__main__":
-    app.run(
-        debug=True,
-        host="0.0.0.0",
-        port=8000
-    )
+    try:
+        PORT = int(os.environ['PORT'])
+        DEBUG = False
+    except Exception as e:
+        PORT = 8000
+        DEBUG = True
+    app.run(host="0.0.0.0", port=PORT, debug=DEBUG)
